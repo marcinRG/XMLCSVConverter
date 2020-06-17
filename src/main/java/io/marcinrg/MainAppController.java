@@ -2,17 +2,16 @@ package io.marcinrg;
 
 import io.marcinrg.collections.FileCollection;
 import io.marcinrg.collections.PersonCollection;
-import io.marcinrg.utils.FileSaver;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioMenuItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EventObject;
 
 public class MainAppController {
@@ -21,13 +20,64 @@ public class MainAppController {
 
     private FileCollection fileCollection = new FileCollection();
     private PersonCollection personCollection = new PersonCollection();
+    private String labelType = "Wybrany typ pliku: ";
+    private String labelFormat = "Wybrany format pliku: ";
+
+    private final String labelZUSType = "Plik ZUS";
+    private final String labelPITType = "Plik PIT-8";
+
+
+    @FXML private Label labelSelectedFileType;
+    @FXML private Label labelSelectedFileFormat;
+    @FXML private RadioMenuItem XMLZusRadioItem;
+    @FXML private RadioMenuItem XMLPITRadioItem;
+
+    @FXML private RadioMenuItem PIT2017RadioItem;
+    @FXML private RadioMenuItem PIT2018RadioItem;
+    @FXML private RadioMenuItem PIT2019RadioItem;
+    @FXML private RadioMenuItem PIT2020RadioItem;
+
 
     public MainAppController() {
+    }
+
+    @FXML
+    private void initialize() {
+        setDirectoryChooserOptions();
+        setFileChooserOptions();
+        XMLZusRadioItem.setSelected(true);
+        XMLZusRadioItem.setText(labelZUSType);
+        XMLPITRadioItem.setText(labelPITType);
+        labelSelectedFileType.setText(labelType+labelZUSType);
+        setEnabledFileFormatRadioItems("");
+    }
+
+    private void setEnabledFileFormatRadioItems(String name) {
+        switch (name) {
+            case labelPITType: {
+                PIT2017RadioItem.setDisable(false);
+                PIT2018RadioItem.setDisable(false);
+                PIT2019RadioItem.setDisable(false);
+                PIT2020RadioItem.setDisable(false);
+                break;
+            }
+            default: {
+                PIT2017RadioItem.setDisable(true);
+                PIT2018RadioItem.setDisable(true);
+                PIT2019RadioItem.setDisable(true);
+                PIT2020RadioItem.setDisable(true);
+            }
+        }
+    }
+
+    private void setDirectoryChooserOptions() {
         getFiles.setTitle("Otwórz katalog z plikami .xml do przetworzenia");
         getFiles.setInitialDirectory(
                 new File(System.getProperty("user.home"))
         );
+    }
 
+    private void setFileChooserOptions() {
         saveFile.setTitle("Zapisz osoby");
         saveFile.setInitialDirectory(new File(System.getProperty("user.home")));
         saveFile.getExtensionFilters().addAll(
@@ -36,26 +86,12 @@ public class MainAppController {
         );
     }
 
-
-    @FXML
-    private void showMessage() throws IOException {
-        System.out.println("Button pressed");
-    }
-
     @FXML
     private void loadFiles(ActionEvent actionEvent) throws Exception {
         Stage stage = (Stage) ((Node) ((EventObject) actionEvent).getSource()).getScene().getWindow();
-        System.out.println(stage.getTitle());
         File f = getFiles.showDialog(stage);
         if (f != null && f.exists() && f.isDirectory()) {
             fileCollection.getFilesFromDirectory(f);
-            ArrayList<File> files = fileCollection.getFileList();
-            for (File file : files) {
-                System.out.println(file.getName());
-                System.out.println(file.getAbsolutePath());
-            }
-            System.out.println("file collection size:");
-            System.out.println(fileCollection.getFileList().size());
         }
     }
 
@@ -71,20 +107,36 @@ public class MainAppController {
     }
 
     @FXML
-    void clearPersons() {
+    private void changeFileType(ActionEvent event) {
+        String txt = ((RadioMenuItem)event.getSource()).getText();
+        labelSelectedFileType.setText(labelType+txt);
+        setEnabledFileFormatRadioItems(txt);
+    };
+
+    @FXML
+    private void changeFileFormat(ActionEvent event) {
+        String txt = ((RadioMenuItem)event.getSource()).getText();
+        labelSelectedFileFormat.setText(labelFormat+txt);
+        setEnabledFileFormatRadioItems(txt);
+    };
+
+    @FXML
+    private void parsePersons() {
+
+    }
+
+    @FXML
+    private void clearPersons() {
         personCollection.clear();
     }
 
     @FXML
     private void clearFiles() {
         fileCollection.clear();
-        System.out.println("file collection size:");
-        System.out.println(fileCollection.getFileList().size());
     }
 
     @FXML
     private void closeApplication() {
-        System.out.println("close app");
+            Platform.exit();
     }
-
 }
