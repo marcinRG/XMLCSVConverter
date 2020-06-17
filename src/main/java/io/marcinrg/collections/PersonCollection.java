@@ -16,6 +16,14 @@ public class PersonCollection {
     private final ArrayList<Person> personsList;
     private DefaultHandler handler;
 
+    public ArrayList<Person> getPersonsList() {
+        return personsList;
+    }
+
+    public void clear() {
+        this.personsList.clear();
+    }
+
     public DefaultHandler getHandler() {
         return handler;
     }

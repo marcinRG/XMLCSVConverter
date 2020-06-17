@@ -101,14 +101,14 @@
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" text="Wczytaj pliki" />
+                  <Button mnemonicParsing="false" text="Wczytaj pliki" onAction="#loadFiles"/>
                   <Button mnemonicParsing="false" text="Wyczyść pliki" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" text="Zapisz do pliku .csv" />
-                  <Button mnemonicParsing="false" text="Wyczyść" />
+                  <Button mnemonicParsing="false" text="Zapisz do pliku .csv" onAction="#saveFiles"/>
+                  <Button mnemonicParsing="false" text="Wyczyść" onAction="#clearFiles" />
                </children>
             </VBox>
             <TableView prefHeight="200.0" prefWidth="200.0">
