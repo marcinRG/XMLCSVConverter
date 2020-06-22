@@ -2,6 +2,8 @@ package io.marcinrg.collections;
 
 
 import io.marcinrg.model.Person;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -10,18 +12,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class PersonCollection {
-    private final ArrayList<Person> personsList;
+    private final ObservableList<Person> personsList;
     private DefaultHandler handler;
 
-    public ArrayList<Person> getPersonsList() {
+    public ObservableList<Person> getPersonsList() {
         return personsList;
     }
 
     public void clear() {
-        this.personsList.clear();
+        personsList.clear();
     }
 
     public DefaultHandler getHandler() {
@@ -33,7 +36,7 @@ public class PersonCollection {
     }
 
     public PersonCollection() {
-        personsList = new ArrayList<>();
+        personsList = FXCollections.observableArrayList();
     }
 
     public void getPersonsFromXMLFiles(FileCollection files) {
@@ -45,7 +48,7 @@ public class PersonCollection {
                 for (File f : files.getFileList()) {
                     File inputFile = f;
                     InputStream inputStream = new FileInputStream(inputFile);
-                    Reader reader = new InputStreamReader(inputStream, "UTF-8");
+                    Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                     InputSource is = new InputSource(reader);
                     is.setEncoding("UTF-8");
                     saxParser.parse(is, handler);
@@ -53,6 +56,7 @@ public class PersonCollection {
 
 
             } catch (ParserConfigurationException | SAXException | IOException e) {
+                System.out.println("Errors ocurred");
             }
         }
     }

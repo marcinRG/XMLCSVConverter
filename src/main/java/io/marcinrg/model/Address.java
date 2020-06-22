@@ -1,6 +1,8 @@
 package io.marcinrg.model;
 
-public class Address {
+import io.marcinrg.interfaces.IGetData;
+
+public class Address implements IGetData {
     private String city;
     private String streetName;
     private String streetNumber;
@@ -40,5 +42,10 @@ public class Address {
 
     public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
+    }
+
+    @Override
+    public String getData() {
+        return city + " " + streetName + " " + streetNumber;
     }
 }

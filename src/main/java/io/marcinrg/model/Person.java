@@ -8,7 +8,7 @@ import java.util.TreeMap;
 public class Person implements IGetData {
     protected String name;
     protected String surName;
-    protected TreeMap<String,NameValue> personData;
+    protected TreeMap<String, NameValue> personData;
 
     public TreeMap<String, NameValue> getPersonData() {
         return personData;
@@ -46,6 +46,9 @@ public class Person implements IGetData {
 
     @Override
     public String getData() {
-        return "Person";
+        System.out.println("getting data");
+        StringBuilder stringBuilder = new StringBuilder();
+        this.personData.values().forEach((elem) -> stringBuilder.append(elem.toString()));
+        return stringBuilder.toString();
     }
 }

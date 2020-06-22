@@ -7,7 +7,7 @@ public class PersonPIT extends Person {
     public PersonPIT() {
         super();
         this.address = new Address();
-        this.setPESEL("");
+        this.PESEL = "";
     }
 
     @Override

@@ -31,4 +31,10 @@ public class NameValue {
     public void setData(BigDecimal data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return this.name + ':' + this.data.toString();
+    }
+
 }

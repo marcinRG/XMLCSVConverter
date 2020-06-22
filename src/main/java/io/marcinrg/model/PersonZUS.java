@@ -8,8 +8,8 @@ public class PersonZUS extends Person {
 
     public PersonZUS(String name, String surName) {
         this();
-        this.setName(name);
-        this.setSurName(surName);
+        this.name = name;
+        this.surName= surName;
     }
 
     @Override

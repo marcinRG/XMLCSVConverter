@@ -30,21 +30,21 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Typy plików">
             <items>
-                  <RadioMenuItem mnemonicParsing="false" selected="true" text="XML ZUS" fx:id="XMLZusRadioItem" onAction="#changeFileType">
+                  <RadioMenuItem fx:id="XMLZusRadioItem" mnemonicParsing="false" onAction="#changeFileType" selected="true" text="XML ZUS">
                      <toggleGroup>
                         <ToggleGroup fx:id="PLIKI" />
                      </toggleGroup>
                   </RadioMenuItem>
-                  <RadioMenuItem mnemonicParsing="false" text="XML PIT" toggleGroup="$PLIKI" fx:id="XMLPITRadioItem" onAction="#changeFileType"/>
+                  <RadioMenuItem fx:id="XMLPITRadioItem" mnemonicParsing="false" onAction="#changeFileType" text="XML PIT" toggleGroup="$PLIKI" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <RadioMenuItem disable="true" mnemonicParsing="false" text="PIT 8 - 2017" fx:id="PIT2017RadioItem" onAction="#changeFileFormat">
+                  <RadioMenuItem fx:id="PIT2017RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2017">
                      <toggleGroup>
                         <ToggleGroup fx:id="PITY" />
                      </toggleGroup>
                   </RadioMenuItem>
-                  <RadioMenuItem disable="true" mnemonicParsing="false" text="PIT 8 - 2018" toggleGroup="$PITY" fx:id="PIT2018RadioItem" onAction="#changeFileFormat"/>
-                  <RadioMenuItem disable="true" mnemonicParsing="false" text="PIT 8 - 2019" toggleGroup="$PITY" fx:id="PIT2019RadioItem" onAction="#changeFileFormat"/>
-                  <RadioMenuItem disable="true" mnemonicParsing="false" text="PIT 8 - 2020" toggleGroup="$PITY" fx:id="PIT2020RadioItem" onAction="#changeFileFormat"/>
+                  <RadioMenuItem fx:id="PIT2018RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2018" toggleGroup="$PITY" />
+                  <RadioMenuItem fx:id="PIT2019RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2019" toggleGroup="$PITY" />
+                  <RadioMenuItem fx:id="PIT2020RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2020" toggleGroup="$PITY" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Dodatkowe">
@@ -71,13 +71,13 @@
    <bottom>
       <HBox prefHeight="25.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Wybrany typ pliku" fx:id="labelSelectedFileType">
+            <Label fx:id="labelSelectedFileType" text="Wybrany typ pliku">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Label>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Label layoutX="15.0" layoutY="15.0" text="Wersja 0,01" fx:id="labelSelectedFileFormat">
+            <Label fx:id="labelSelectedFileFormat" layoutX="15.0" layoutY="15.0" text="Wersja 0,01">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
@@ -110,17 +110,17 @@
                   <Button mnemonicParsing="false" onAction="#clearPersons" text="Wyczyść" />
                </children>
             </VBox>
-            <TableView prefHeight="200.0" prefWidth="200.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="Nazwa pliku" />
-                <TableColumn prefWidth="75.0" text="Ścieżka" />
-              </columns>
+            <TableView fx:id="tableViewFiles" prefHeight="200.0" prefWidth="200.0">
+<!--              <columns>-->
+<!--                <TableColumn prefWidth="75.0" fx:id="fileNameColumn"/>-->
+<!--                <TableColumn prefWidth="75.0" fx:id="filePathColumn"/>-->
+<!--              </columns>-->
             </TableView>
-            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
-              <columns>
-                <TableColumn prefWidth="75.0" text="Nazwisko" />
-                <TableColumn prefWidth="75.0" text="Imię" />
-              </columns>
+            <TableView fx:id="tableViewPersons" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+<!--              <columns>-->
+<!--                <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Nazwisko" />-->
+<!--                <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Imię" />-->
+<!--              </columns>-->
             </TableView>
             <Button mnemonicParsing="false" onAction="#parsePersons" text="Parsuj =&gt;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
          </children>
