@@ -2,25 +2,32 @@ package io.marcinrg;
 
 import io.marcinrg.collections.FileCollection;
 import io.marcinrg.collections.PersonCollection;
+import io.marcinrg.model.FileWithPOM;
 import io.marcinrg.model.Person;
+import io.marcinrg.utils.CheckBOM;
+import io.marcinrg.xml.PersonPITHandler;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
-import java.util.EventObject;
+
 
 public class MainAppController {
     private DirectoryChooser getFiles = new DirectoryChooser();
     private FileChooser saveFile = new FileChooser();
+    private PersonPITHandler personPITHandler = new PersonPITHandler();
 
     private FileCollection fileCollection = new FileCollection();
     private PersonCollection personCollection = new PersonCollection();
@@ -31,9 +38,10 @@ public class MainAppController {
     private final String labelPITType = "Plik PIT-8";
 
     @FXML
-    private TableView<File> tableViewFiles = new TableView<>();
-    private TableColumn<File, String> fileNameColumn = new TableColumn<>("Nazwa pliku");
-    private TableColumn<File, String> filePathColumn = new TableColumn<>("Ścieżka");
+    private TableView<FileWithPOM> tableViewFiles = new TableView<>();
+    private TableColumn<FileWithPOM, String> fileNameColumn = new TableColumn<>("Nazwa pliku");
+    private TableColumn<FileWithPOM, String> filePathColumn = new TableColumn<>("Ścieżka");
+    private TableColumn<FileWithPOM, Boolean> filePOMColumn = new TableColumn<>("POM");
 
     @FXML
     private TableView<Person> tableViewPersons = new TableView<>();
@@ -75,9 +83,22 @@ public class MainAppController {
     }
 
     private void prepareTableViewFiles() {
-        tableViewFiles.getColumns().addAll(fileNameColumn, filePathColumn);
-        fileNameColumn.setCellValueFactory(fileStringCellDataFeatures -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getName()));
-        filePathColumn.setCellValueFactory(fileStringCellDataFeatures -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getAbsolutePath()));
+        tableViewFiles.getColumns().addAll(fileNameColumn, filePathColumn, filePOMColumn);
+        fileNameColumn.setCellValueFactory((TableColumn.CellDataFeatures<FileWithPOM, String> fileStringCellDataFeatures) -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getFile().getName()));
+        filePathColumn.setCellValueFactory(fileStringCellDataFeatures -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getFile().getAbsolutePath()));
+
+        filePOMColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FileWithPOM, Boolean>, ObservableValue<Boolean>>() {
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<FileWithPOM, Boolean> fileWithPOMBooleanCellDataFeatures) {
+                return new ReadOnlyBooleanWrapper(fileWithPOMBooleanCellDataFeatures.getValue().isHasPOM());
+            }
+        });
+        filePOMColumn.setCellFactory(new Callback<TableColumn<FileWithPOM, Boolean>, TableCell<FileWithPOM, Boolean>>() {
+            @Override
+            public TableCell<FileWithPOM, Boolean> call(TableColumn<FileWithPOM, Boolean> fileWithPOMBooleanTableColumn) {
+                return new CheckBoxTableCell();
+            }
+        });
         tableViewFiles.setItems(fileCollection.getFileList());
     }
 
@@ -90,7 +111,6 @@ public class MainAppController {
         XMLPITRadioItem.setText(labelPITType);
         labelSelectedFileType.setText(labelType + labelZUSType);
         setEnabledFileFormatRadioItems("");
-
         prepareTableViewFiles();
 
     }
@@ -136,6 +156,7 @@ public class MainAppController {
         if (f != null && f.exists() && f.isDirectory()) {
             fileCollection.getFilesFromDirectory(f);
         }
+
     }
 
     @FXML
@@ -165,6 +186,9 @@ public class MainAppController {
 
     @FXML
     private void parsePersons() {
+
+        personCollection.setHandler(personPITHandler);
+        personCollection.getPersonsFromXMLFiles(fileCollection);
 
 //        TableColumn<PersonSimple, String> firstNameCol = new TableColumn("First Name");
 //        firstNameCol.setMinWidth(100);

@@ -1,5 +1,7 @@
 package io.marcinrg.collections;
 
+import io.marcinrg.model.FileWithPOM;
+import io.marcinrg.utils.CheckBOM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -9,7 +11,7 @@ import java.util.Arrays;
 
 public class FileCollection {
 
-    private final ObservableList<File> fileList = FXCollections.observableArrayList();
+    private final ObservableList<FileWithPOM> fileList = FXCollections.observableArrayList();
 
     public void clear() {
         fileList.clear();
@@ -18,13 +20,13 @@ public class FileCollection {
     public void getFilesFromDirectory(File file) {
         if ((file != null) && (file.isDirectory())) {
             fileList.clear();
-            if (file.listFiles().length > 0) {
-                fileList.addAll(Arrays.asList(file.listFiles()));
-            }
+            Arrays.stream(file.listFiles())
+                    .filter(elem -> elem.getName().endsWith(".xml"))
+                    .forEach(elem -> fileList.add(new FileWithPOM(elem, CheckBOM.checkUTF8FileForBOM(elem))));
         }
     }
 
-    public ObservableList<File> getFileList() {
+    public ObservableList<FileWithPOM> getFileList() {
         return fileList;
     }
 

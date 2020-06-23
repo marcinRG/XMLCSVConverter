@@ -1,11 +1,14 @@
 package io.marcinrg.xml;
 
 import io.marcinrg.model.Address;
+import io.marcinrg.model.NameValue;
 import io.marcinrg.model.Person;
 import io.marcinrg.model.PersonPIT;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.math.BigDecimal;
 
 public class PersonPITHandler extends DefaultHandler {
     private PersonPIT person;
@@ -75,7 +78,7 @@ public class PersonPITHandler extends DefaultHandler {
             isData = true;
         }
 
-        if (qName.contains("P_")) {
+        if (qName.startsWith("P_")) {
             if (isData) {
                 currentElem = qName;
             }
@@ -86,6 +89,7 @@ public class PersonPITHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (currentElem.equals("etd:ImiePierwsze")) {
             if (isPerson) {
+                System.out.println("elem: " + currentElem +" val: " +valElem);
                 person.setName(valElem);
                 currentElem = "";
                 valElem = "";
@@ -94,6 +98,7 @@ public class PersonPITHandler extends DefaultHandler {
 
         if (qName.equals("etd:Nazwisko")) {
             if (isPerson) {
+                System.out.println("elem: " + currentElem +" val: " +valElem);
                 person.setSurName(valElem);
                 currentElem = "";
                 valElem = "";
@@ -102,6 +107,7 @@ public class PersonPITHandler extends DefaultHandler {
 
         if (qName.equals("Miejscowosc")) {
             if (isAddress) {
+                System.out.println("elem: " + currentElem +" val: " +valElem);
                 address.setCity(valElem);
                 currentElem = "";
                 valElem = "";
@@ -109,6 +115,7 @@ public class PersonPITHandler extends DefaultHandler {
         }
         if (qName.equals("Ulica")) {
             if (isAddress) {
+                System.out.println("elem: " + currentElem +" val: " +valElem);
                 address.setStreetName(valElem);
                 currentElem = "";
                 valElem = "";
@@ -117,13 +124,16 @@ public class PersonPITHandler extends DefaultHandler {
         }
         if (qName.equals("NrDomu")) {
             if (isAddress) {
+                System.out.println("elem: " + currentElem +" val: " +valElem);
                 address.setStreetNumber(valElem);
                 currentElem = "";
                 valElem = "";
             }
         }
 
-        if (qName.contains("P_")) {
+        if (qName.startsWith("P_")) {
+            person.getPersonData().put(currentElem,new NameValue(currentElem, new BigDecimal(valElem)));
+            valElem = "";
             currentElem = "";
         }
 
@@ -143,25 +153,22 @@ public class PersonPITHandler extends DefaultHandler {
     public void characters(char[] chars, int start, int length) throws SAXException {
         String value = new String(chars, start, length);
         if (currentElem.equals("etd:ImiePierwsze")) {
-            valElem += value;
+            valElem = value;
         }
         if (currentElem.equals("etd:Nazwisko")) {
-            valElem += value;
+            valElem = value;
         }
         if (currentElem.equals("Miejscowosc")) {
-            valElem += value;
+            valElem = value;
         }
         if (currentElem.equals("Ulica")) {
-            valElem += value;
+            valElem = value;
         }
         if (currentElem.equals("NrDomu")) {
-            valElem += value;
+            valElem = value;
         }
         if (currentElem.contains("P_")) {
-            System.out.println(currentElem);
-
+            valElem = value;
         }
     }
-
-
 }

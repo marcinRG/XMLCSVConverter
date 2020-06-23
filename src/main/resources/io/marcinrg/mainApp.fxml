@@ -9,7 +9,6 @@
 <?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.BorderPane?>
@@ -94,20 +93,21 @@
           <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="280.0" prefHeight="280.0" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0" vgrow="NEVER" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="235.0" prefHeight="246.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="115.0" minHeight="70.0" prefHeight="104.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#loadFiles" text="Wczytaj pliki" />
-                  <Button mnemonicParsing="false" onAction="#clearFiles" text="Wyczyść pliki" />
+                  <Button mnemonicParsing="false" onAction="#loadFiles" prefWidth="150.0" text="Wczytaj pliki XML z katalogu" />
+                  <Button minWidth="-Infinity" mnemonicParsing="false" prefWidth="150.0" text="Usuń BOM z plików XML" />
+                  <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#clearFiles" prefWidth="150.0" text="Wyczyść pliki" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#saveFiles" text="Zapisz do pliku .csv" />
-                  <Button mnemonicParsing="false" onAction="#clearPersons" text="Wyczyść" />
+                  <Button mnemonicParsing="false" onAction="#saveFiles" prefWidth="150.0" text="Zapisz do pliku .csv" />
+                  <Button mnemonicParsing="false" onAction="#clearPersons" prefWidth="150.0" text="Wyczyść" />
                </children>
             </VBox>
             <TableView fx:id="tableViewFiles" prefHeight="200.0" prefWidth="200.0">
