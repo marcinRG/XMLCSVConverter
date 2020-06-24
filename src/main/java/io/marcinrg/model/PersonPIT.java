@@ -1,29 +1,28 @@
 package io.marcinrg.model;
 
 public class PersonPIT extends Person {
-    private String PESEL;
+
     private Address address;
 
-    public PersonPIT() {
-        super();
-        this.address = new Address();
-        this.PESEL = "";
+    @Override
+    public String getData(String delimiter) {
+        return String.format("%s%s%s%s", getNameAndSurName(delimiter), address.getData(delimiter) , getDataAsString(delimiter));
+
     }
 
     @Override
-    public String getData() {
-        return "PersonPIT";
+    public String getNames(String delimiter) {
+        return String.format("%s%s%s%s%s", "name", delimiter, "surname", address.getNames(delimiter), getDataNamesAsString(delimiter));
+    }
+
+    public PersonPIT() {
+        super();
     }
 
     public PersonPIT(String name, String surName) {
         this();
-        this.setName(name);
-        this.setSurName(surName);
-    }
-
-    public PersonPIT(String name, String surName, String PESEL) {
-        this(name, surName);
-        this.setPESEL(PESEL);
+        this.name = name;
+        this.surName= surName;
     }
 
     public Address getAddress() {
@@ -34,11 +33,4 @@ public class PersonPIT extends Person {
         this.address = address;
     }
 
-    public String getPESEL() {
-        return PESEL;
-    }
-
-    public void setPESEL(String  PESEL) {
-        this.PESEL = PESEL;
-    }
 }

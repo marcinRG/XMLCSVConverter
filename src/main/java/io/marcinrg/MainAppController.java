@@ -6,6 +6,7 @@ import io.marcinrg.model.FileWithPOM;
 import io.marcinrg.model.Person;
 import io.marcinrg.utils.CheckBOM;
 import io.marcinrg.xml.PersonPITHandler;
+import io.marcinrg.xml.PersonZUSHandler;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
@@ -28,6 +29,7 @@ public class MainAppController {
     private DirectoryChooser getFiles = new DirectoryChooser();
     private FileChooser saveFile = new FileChooser();
     private PersonPITHandler personPITHandler = new PersonPITHandler();
+    private PersonZUSHandler personZUSHandler = new PersonZUSHandler();
 
     private FileCollection fileCollection = new FileCollection();
     private PersonCollection personCollection = new PersonCollection();
@@ -187,8 +189,12 @@ public class MainAppController {
     @FXML
     private void parsePersons() {
 
-        personCollection.setHandler(personPITHandler);
-        personCollection.getPersonsFromXMLFiles(fileCollection);
+//        personCollection.setHandler(personPITHandler);
+//        personCollection.getPersonsFromXMLFiles(fileCollection);
+
+          personCollection.setHandler(personZUSHandler);
+          personCollection.getPersonsFromZUSXMLFile(fileCollection);
+
 
 //        TableColumn<PersonSimple, String> firstNameCol = new TableColumn("First Name");
 //        firstNameCol.setMinWidth(100);

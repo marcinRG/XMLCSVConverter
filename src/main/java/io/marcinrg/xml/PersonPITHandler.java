@@ -3,7 +3,7 @@ package io.marcinrg.xml;
 import io.marcinrg.model.Address;
 import io.marcinrg.model.NameValue;
 import io.marcinrg.model.Person;
-import io.marcinrg.model.PersonPIT;
+import io.marcinrg.model.PersonZUS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -11,7 +11,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.math.BigDecimal;
 
 public class PersonPITHandler extends DefaultHandler {
-    private PersonPIT person;
+    private PersonZUS person;
     private String currentElem;
     private String valElem;
     private Address address;
@@ -30,8 +30,7 @@ public class PersonPITHandler extends DefaultHandler {
 
     private void intialize()
     {
-        person = new PersonPIT();
-        address = person.getAddress();
+        person = new PersonZUS();
         currentElem="";
         valElem="";
     }
@@ -153,22 +152,22 @@ public class PersonPITHandler extends DefaultHandler {
     public void characters(char[] chars, int start, int length) throws SAXException {
         String value = new String(chars, start, length);
         if (currentElem.equals("etd:ImiePierwsze")) {
-            valElem = value;
+            valElem += value;
         }
         if (currentElem.equals("etd:Nazwisko")) {
-            valElem = value;
+            valElem += value;
         }
         if (currentElem.equals("Miejscowosc")) {
-            valElem = value;
+            valElem += value;
         }
         if (currentElem.equals("Ulica")) {
-            valElem = value;
+            valElem += value;
         }
         if (currentElem.equals("NrDomu")) {
-            valElem = value;
+            valElem += value;
         }
         if (currentElem.contains("P_")) {
-            valElem = value;
+            valElem += value;
         }
     }
 }

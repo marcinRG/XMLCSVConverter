@@ -45,7 +45,12 @@ public class Address implements IGetData {
     }
 
     @Override
-    public String getData() {
-        return city + " " + streetName + " " + streetNumber;
+    public String getData(String delimiter) {
+        return String.format("%s%s%s%s%s%s",delimiter,city,delimiter,streetName,delimiter,streetNumber);
+    }
+
+    @Override
+    public String getNames(String delimiter) {
+        return String.format("%s%s%s%s%s%s",delimiter, "city",delimiter,"street name",delimiter,"street number");
     }
 }

@@ -19,6 +19,7 @@ public class Person implements IGetData {
     }
 
     public Person() {
+        this.personData = new TreeMap<>();
         this.name = "";
         this.surName = "";
     }
@@ -44,11 +45,34 @@ public class Person implements IGetData {
         this.surName = surName;
     }
 
-    @Override
-    public String getData() {
-        System.out.println("getting data");
+    public void addValue(NameValue element) {
+        this.personData.put(element.getName(), element);
+    }
+
+    protected String getNameAndSurName(String delimiter) {
+        return String.format("%s%s%s", this.name, delimiter, this.surName);
+    }
+
+    protected String getDataAsString(String delimiter) {
         StringBuilder stringBuilder = new StringBuilder();
-        this.personData.values().forEach((elem) -> stringBuilder.append(elem.toString()));
+        this.personData.values().forEach((elem) -> stringBuilder.append(String.format("%s%s", delimiter, elem.getData().toString())));
         return stringBuilder.toString();
     }
+
+    protected String getDataNamesAsString(String delimiter) {
+        StringBuilder stringBuilder = new StringBuilder();
+        this.personData.keySet().forEach((elem) -> stringBuilder.append(String.format("%s%s", delimiter, elem)));
+        return stringBuilder.toString();
+    }
+
+
+    @Override
+    public String getData(String delimiter) {
+        return String.format("%s%s", getNameAndSurName(delimiter),  getDataAsString(delimiter));
+    }
+
+    public String getNames(String delimiter) {
+        return String.format("%s%s%s%s", "name", delimiter, "surname", getDataNamesAsString(delimiter));
+    }
+
 }

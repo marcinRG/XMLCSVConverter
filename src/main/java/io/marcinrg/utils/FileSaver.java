@@ -7,14 +7,14 @@ import java.util.ArrayList;
 
 public class FileSaver {
 
-    public static <T extends IGetData> boolean saveToFile(File file, ArrayList<T> list) {
+    public static <T extends IGetData> boolean saveToFile(File file, ArrayList<T> list, String delimiter) {
         try {
             if (list.size() > 0) {
                 File f = file;
                 FileOutputStream fout = new FileOutputStream(file);
                 try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fout))) {
                     for (T elem : list) {
-                        writer.write(elem.getData());
+                        writer.write(elem.getData(delimiter));
                         writer.newLine();
                     }
                 }

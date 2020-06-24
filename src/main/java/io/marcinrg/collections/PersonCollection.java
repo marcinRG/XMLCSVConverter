@@ -42,13 +42,13 @@ public class PersonCollection {
         personsList = FXCollections.observableArrayList();
     }
 
-    public void getPersonsFromXMLFiles(FileCollection files) {
-        if (files.getFileList().size() > 0 && handler != null) {
+    public void getPersonsFromXMLFiles(FileCollection fileCollection) {
+        if (fileCollection.getFileList().size() > 0 && handler != null) {
             try {
                 personsList.clear();
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 SAXParser saxParser = factory.newSAXParser();
-                for (FileWithPOM element : files.getFileList()) {
+                for (FileWithPOM element : fileCollection.getFileList()) {
                     File file = element.getFile();
                     BOMInputStream is = CheckBOM.getStream(file);
                     saxParser.parse(is, handler);
@@ -63,17 +63,16 @@ public class PersonCollection {
 
 }
 
-    public void getPersonsFromXMLFile(File file) {
-        if (file.exists()) {
+    public void getPersonsFromZUSXMLFile(FileCollection fileCollection) {
+        if (fileCollection.getFileList().size() == 1 && handler != null) {
             try {
                 personsList.clear();
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 SAXParser saxParser = factory.newSAXParser();
-                InputStream inputStream = new FileInputStream(file);
-                Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                InputSource is = new InputSource(reader);
-                is.setEncoding("UTF-8");
+                File file = fileCollection.getFileList().get(0).getFile();
+                BOMInputStream is = CheckBOM.getStream(file);
                 saxParser.parse(is, handler);
+
             } catch (IOException | ParserConfigurationException | SAXException e) {
                 e.printStackTrace();
             }

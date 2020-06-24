@@ -1,5 +1,6 @@
 package io.marcinrg.interfaces;
 
 public interface IGetData {
-    public String getData();
+    String getData(String delimiter);
+    String getNames(String delimiter);
 }
