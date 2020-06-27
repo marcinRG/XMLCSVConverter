@@ -1,18 +1,33 @@
 package io.marcinrg.xml;
 
+import io.marcinrg.interfaces.IGetPersonFromFile;
+import io.marcinrg.interfaces.IGetPersonsFromFile;
+import io.marcinrg.model.NameValue;
 import io.marcinrg.model.Person;
 import io.marcinrg.model.PersonZUS;
+import io.marcinrg.utils.CheckBOM;
+import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class PersonZUSHandler extends DefaultHandler {
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+public class PersonZUSHandler extends DefaultHandler implements IGetPersonsFromFile<PersonZUS> {
+    private ArrayList<PersonZUS> personZUSArrayList;
     private PersonZUS person;
     private String currentElem;
     private String valElem;
 
     public int personCount = 0;
     private final String header = "row";
-    private final String disabilityLabel = "disabilityCode";
+    private int rowCount = 0;
     private boolean isDocument;
     private boolean isPerson;
     private boolean isPersonalData;
@@ -21,6 +36,7 @@ public class PersonZUSHandler extends DefaultHandler {
     private boolean isData3rd;
     private boolean isData;
     private int level = 0;
+    private boolean isWorkData;
 
     public PersonZUSHandler() {
     }
@@ -40,7 +56,9 @@ public class PersonZUSHandler extends DefaultHandler {
         isData2nd = false;
         isData3rd = false;
         isData = false;
+        isWorkData = false;
         level = 0;
+        rowCount = 0;
 
     }
 
@@ -59,7 +77,15 @@ public class PersonZUSHandler extends DefaultHandler {
 
         if (isDocument && qName.equals("III")) {
             isPerson = true;
+            isPersonalData = false;
+            isData1st = false;
+            isData2nd = false;
+            isData3rd = false;
+            isData = false;
+            isWorkData = false;
+            person = new PersonZUS();
         }
+
 
         if (isPerson && qName.equals("A")) {
             isPersonalData = true;
@@ -67,26 +93,33 @@ public class PersonZUSHandler extends DefaultHandler {
 
         if (isPerson && qName.equals("B")) {
             isData1st = true;
+            rowCount = rowCount + 1;
             level = 0;
         }
 
         if (isPerson && qName.equals("C")) {
             isData2nd = true;
+            rowCount = rowCount + 1;
         }
 
         if (isPerson && qName.equals("D")) {
             isData3rd = true;
+            rowCount = rowCount + 1;
         }
 
-        if (isData1st && (qName.equals("p1") || qName.equals("p2") || qName.equals("p3"))) {
-            isData= false;
-            level += 1;
-        }
-
-        if (isData1st && !(qName.equals("p1") || qName.equals("p2") || qName.equals("p3"))) {
+        if (isPerson && (isData2nd || isData3rd) && qName.startsWith("p")) {
             isData = true;
         }
 
+
+        if (isData1st) {
+            if (qName.equals("p1") || qName.equals("p2") || qName.equals("p3")) {
+                isData = false;
+                level += 1;
+            } else {
+                isData = true;
+            }
+        }
 
     }
 
@@ -96,7 +129,21 @@ public class PersonZUSHandler extends DefaultHandler {
             isDocument = false;
         }
 
+        if (isPersonalData && qName.equals("p1")) {
+            person.setSurName(valElem);
+        }
+
+        if (isPersonalData && qName.equals("p2")) {
+            person.setName(valElem);
+        }
+
+        if (isPersonalData && qName.equals("p4")) {
+            person.setPESEL(valElem);
+        }
+
+
         if (isPerson && qName.equals("III")) {
+            personZUSArrayList.add(person);
             isPerson = false;
         }
 
@@ -117,21 +164,26 @@ public class PersonZUSHandler extends DefaultHandler {
         }
 
         if (level > 1) {
-            System.out.println(qName + " : " + valElem);
+            if (isWorkData) {
+                person.addTime(new BigDecimal(valElem));
+            } else {
+                person.setDisabilityCode(person.getDisabilityCode() + valElem);
+            }
         }
 
         if (isData1st && (qName.equals("p1") || qName.equals("p2") || qName.equals("p3"))) {
             level -= 1;
+            if (qName.endsWith("p3")) {
+                isWorkData = true;
+            }
         }
 
-        if (isData1st && isData) {
-            System.out.println("Data:" + qName + " : " + valElem);
+        if ((isData2nd || isData1st ||isData3rd) && isData) {
+            String newName = header + rowCount + qName;
+            person.addValue(new NameValue(newName,new BigDecimal(valElem)));
             isData = false;
         }
-
         valElem = "";
-
-
     }
 
     @Override
@@ -140,4 +192,18 @@ public class PersonZUSHandler extends DefaultHandler {
         valElem += value;
     }
 
+    @Override
+    public ArrayList<PersonZUS> getPersonsFromFile(File file) throws IOException, SAXException, ParserConfigurationException {
+        BOMInputStream inputStream = CheckBOM.getStream(file);
+        return getPersonsFromInputSteam(inputStream);
+    }
+
+    @Override
+    public ArrayList<PersonZUS> getPersonsFromInputSteam(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
+        personZUSArrayList = new ArrayList<>();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser saxParser = factory.newSAXParser();
+        saxParser.parse(inputStream, this);
+        return personZUSArrayList;
+    }
 }

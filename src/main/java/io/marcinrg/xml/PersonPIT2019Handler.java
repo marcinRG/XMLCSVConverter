@@ -1,36 +1,39 @@
 package io.marcinrg.xml;
 
-import io.marcinrg.model.Address;
-import io.marcinrg.model.NameValue;
-import io.marcinrg.model.Person;
-import io.marcinrg.model.PersonZUS;
+import io.marcinrg.interfaces.IGetPersonFromFile;
+import io.marcinrg.model.*;
+import io.marcinrg.utils.CheckBOM;
+import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 
-public class PersonPITHandler extends DefaultHandler {
-    private PersonZUS person;
+public class PersonPIT2019Handler extends DefaultHandler implements IGetPersonFromFile<PersonPIT>{
+
+    private PersonPIT person;
     private String currentElem;
     private String valElem;
-    private Address address;
+
 
     //flags
     private boolean isPerson = false;
     private boolean isAddress = false;
     private boolean isData = false;
 
-    public PersonPITHandler() {
-    }
-
-    public Person getPerson() {
-        return person;
+    public PersonPIT2019Handler() {
     }
 
     private void intialize()
     {
-        person = new PersonZUS();
+        person = new PersonPIT();
         currentElem="";
         valElem="";
     }
@@ -88,7 +91,6 @@ public class PersonPITHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (currentElem.equals("etd:ImiePierwsze")) {
             if (isPerson) {
-                System.out.println("elem: " + currentElem +" val: " +valElem);
                 person.setName(valElem);
                 currentElem = "";
                 valElem = "";
@@ -97,7 +99,6 @@ public class PersonPITHandler extends DefaultHandler {
 
         if (qName.equals("etd:Nazwisko")) {
             if (isPerson) {
-                System.out.println("elem: " + currentElem +" val: " +valElem);
                 person.setSurName(valElem);
                 currentElem = "";
                 valElem = "";
@@ -106,16 +107,14 @@ public class PersonPITHandler extends DefaultHandler {
 
         if (qName.equals("Miejscowosc")) {
             if (isAddress) {
-                System.out.println("elem: " + currentElem +" val: " +valElem);
-                address.setCity(valElem);
+                person.getAddress().setCity(valElem);
                 currentElem = "";
                 valElem = "";
             }
         }
         if (qName.equals("Ulica")) {
             if (isAddress) {
-                System.out.println("elem: " + currentElem +" val: " +valElem);
-                address.setStreetName(valElem);
+                person.getAddress().setStreetName(valElem);
                 currentElem = "";
                 valElem = "";
             }
@@ -123,15 +122,14 @@ public class PersonPITHandler extends DefaultHandler {
         }
         if (qName.equals("NrDomu")) {
             if (isAddress) {
-                System.out.println("elem: " + currentElem +" val: " +valElem);
-                address.setStreetNumber(valElem);
+                person.getAddress().setStreetNumber(valElem);
                 currentElem = "";
                 valElem = "";
             }
         }
 
         if (qName.startsWith("P_")) {
-            person.getPersonData().put(currentElem,new NameValue(currentElem, new BigDecimal(valElem)));
+            person.addValue(new NameValue(currentElem, new BigDecimal(valElem)));
             valElem = "";
             currentElem = "";
         }
@@ -169,5 +167,20 @@ public class PersonPITHandler extends DefaultHandler {
         if (currentElem.contains("P_")) {
             valElem += value;
         }
+    }
+
+    @Override
+    public PersonPIT getPersonFromFile(File file) throws IOException, SAXException, ParserConfigurationException {
+        BOMInputStream inputStream = CheckBOM.getStream(file);
+        return getPersonFromInputStream(inputStream);
+    }
+
+    @Override
+    public PersonPIT getPersonFromInputStream(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
+        person = new PersonPIT();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser saxParser = factory.newSAXParser();
+        saxParser.parse(inputStream, this);
+        return person;
     }
 }

@@ -1,19 +1,13 @@
 package modelTest;
 
-import io.marcinrg.utils.CheckBOM;
+import io.marcinrg.model.PersonZUS;
 import io.marcinrg.xml.PersonZUSHandler;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.BOMInputStream;
 import org.junit.Assert;
 import org.junit.Test;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class PersonZUSHandlerTest {
     private String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
@@ -37,7 +31,7 @@ public class PersonZUSHandlerTest {
             "</p1>\n" +
             "</I>\n" +
             "<II>\n" +
-            "<p1>6131001463</p1><p2>230068511</p2><p3>49061109840</p3>                                           \n" +
+            "<p1>6131001463</p1><p2>430868511</p2><p3>69861109840</p3>                                           \n" +
             "                                                                                                    \n" +
             "<p6>PPHU&#32;POLSKOPOL</p6>                                                                           \n" +
             "<p7>XEXE</p7><p8>AGELINA</p8><p9>1960-06-11</p9>                                              \n" +
@@ -57,8 +51,8 @@ public class PersonZUSHandlerTest {
             "</p1>\n" +
             "<p2></p2>\n" +
             "<p3>\n" +
-            "    <p1>001</p1>\n" +
-            "    <p2>001</p2>\n" +
+            "    <p1>003</p1>\n" +
+            "    <p2>004</p2>\n" +
             "</p3>\n" +
             "<p4>2600.00</p4>         \n" +
             "<p5>2600.00</p5>         \n" +
@@ -107,13 +101,19 @@ public class PersonZUSHandlerTest {
             "</KEDU>";
 
     @Test
-    public void Test() {
+    public void getPersonsFromInputStreamMethodTest() {
         try {
-            DefaultHandler handler = new PersonZUSHandler();
+            PersonZUSHandler personZUSHandler = new PersonZUSHandler();
             InputStream inputStream = IOUtils.toInputStream(xml, StandardCharsets.UTF_8);
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser saxParser = factory.newSAXParser();
-            saxParser.parse(inputStream, handler);
+            ArrayList<PersonZUS> personList = personZUSHandler.getPersonsFromInputSteam(inputStream);
+            Assert.assertEquals("personList size shoulb be 1", personList.size(), 1);
+            PersonZUS personZUS = personList.get(0);
+            Assert.assertEquals("Names should be equal", personZUS.getName(), "WIOLETTA");
+            Assert.assertEquals("Surnames should be equal", personZUS.getSurName(), "XERSES");
+            Assert.assertEquals("values should be equal", personZUS.getPESEL(), "86071414587");
+            Assert.assertEquals("values should be equal", personZUS.getDisabilityCode(), "011000");
+            Assert.assertEquals("values should be equal", personZUS.getTimes(), "3/4");
+
         } catch (Exception e) {
             Assert.fail();
         }

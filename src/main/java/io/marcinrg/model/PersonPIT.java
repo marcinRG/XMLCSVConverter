@@ -6,7 +6,7 @@ public class PersonPIT extends Person {
 
     @Override
     public String getData(String delimiter) {
-        return String.format("%s%s%s%s", getNameAndSurName(delimiter), address.getData(delimiter) , getDataAsString(delimiter));
+        return String.format("%s%s%s%s", getNameAndSurName(delimiter), address.getData(delimiter), getDataAsString(delimiter));
 
     }
 
@@ -17,12 +17,13 @@ public class PersonPIT extends Person {
 
     public PersonPIT() {
         super();
+        address = new Address();
     }
 
     public PersonPIT(String name, String surName) {
         this();
         this.name = name;
-        this.surName= surName;
+        this.surName = surName;
     }
 
     public Address getAddress() {

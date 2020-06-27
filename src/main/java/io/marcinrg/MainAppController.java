@@ -4,19 +4,16 @@ import io.marcinrg.collections.FileCollection;
 import io.marcinrg.collections.PersonCollection;
 import io.marcinrg.model.FileWithPOM;
 import io.marcinrg.model.Person;
-import io.marcinrg.utils.CheckBOM;
-import io.marcinrg.xml.PersonPITHandler;
+import io.marcinrg.xml.PersonPIT2019Handler;
 import io.marcinrg.xml.PersonZUSHandler;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -28,7 +25,7 @@ import java.io.File;
 public class MainAppController {
     private DirectoryChooser getFiles = new DirectoryChooser();
     private FileChooser saveFile = new FileChooser();
-    private PersonPITHandler personPITHandler = new PersonPITHandler();
+    private PersonPIT2019Handler personPIT2019Handler = new PersonPIT2019Handler();
     private PersonZUSHandler personZUSHandler = new PersonZUSHandler();
 
     private FileCollection fileCollection = new FileCollection();
@@ -84,6 +81,19 @@ public class MainAppController {
     public MainAppController() {
     }
 
+    private void prepareTableViewPersons() {
+        TableColumn<Person, String> nameColumn = new TableColumn<>("Imię");
+        TableColumn<Person, String> surNameColumn = new TableColumn<>("Nazwisko");
+        TableColumn<Person, String> dataColumn = new TableColumn<>("Dane");
+
+        tableViewPersons.getColumns().addAll(nameColumn, surNameColumn, dataColumn);
+        nameColumn.setCellValueFactory(personStringCellDataFeatures -> new SimpleStringProperty(personStringCellDataFeatures.getValue().getName()));
+        surNameColumn.setCellValueFactory(personStringCellDataFeatures -> new SimpleStringProperty(personStringCellDataFeatures.getValue().getSurName()));
+        dataColumn.setCellValueFactory(personStringCellDataFeatures -> new SimpleStringProperty(personStringCellDataFeatures.getValue().getData("|")));
+        tableViewPersons.setItems(personCollection.getPersonsList());
+        tableViewPersons.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+
     private void prepareTableViewFiles() {
         tableViewFiles.getColumns().addAll(fileNameColumn, filePathColumn, filePOMColumn);
         fileNameColumn.setCellValueFactory((TableColumn.CellDataFeatures<FileWithPOM, String> fileStringCellDataFeatures) -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getFile().getName()));
@@ -102,6 +112,7 @@ public class MainAppController {
             }
         });
         tableViewFiles.setItems(fileCollection.getFileList());
+        tableViewFiles.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     @FXML
@@ -114,6 +125,7 @@ public class MainAppController {
         labelSelectedFileType.setText(labelType + labelZUSType);
         setEnabledFileFormatRadioItems("");
         prepareTableViewFiles();
+        prepareTableViewPersons();
 
     }
 
@@ -158,7 +170,6 @@ public class MainAppController {
         if (f != null && f.exists() && f.isDirectory()) {
             fileCollection.getFilesFromDirectory(f);
         }
-
     }
 
     @FXML
@@ -166,9 +177,12 @@ public class MainAppController {
         if (personCollection.getPersonsList().size() > 0) {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             File f = saveFile.showSaveDialog(stage);
-//            if (f != null) {
-//                boolean saved = FileSaver.saveToFile(f, personCollection.getPersonsList());
-//            }
+            if (f != null) {
+                boolean saved = personCollection.saveToFile(f);
+                if (!saved) {
+                    System.out.println("Did not save to file");
+                }
+            }
         }
     }
 
@@ -188,33 +202,12 @@ public class MainAppController {
 
     @FXML
     private void parsePersons() {
-
-//        personCollection.setHandler(personPITHandler);
-//        personCollection.getPersonsFromXMLFiles(fileCollection);
-
-          personCollection.setHandler(personZUSHandler);
-          personCollection.getPersonsFromZUSXMLFile(fileCollection);
-
-
-//        TableColumn<PersonSimple, String> firstNameCol = new TableColumn("First Name");
-//        firstNameCol.setMinWidth(100);
-//        firstNameCol.setCellValueFactory(
-//                new PropertyValueFactory<PersonSimple, String>("firstName"));
-//
-//        TableColumn<PersonSimple, String> lastNameCol = new TableColumn("Last Name");
-//        lastNameCol.setMinWidth(100);
-//        lastNameCol.setCellValueFactory(
-//                new PropertyValueFactory<PersonSimple, String>("lastName"));
-//
-//        tableViewPersons.setItems(personsExpList);
-//        tableViewPersons.getColumns().addAll(firstNameCol, lastNameCol);
-
-
+        personCollection.getPersonsFromZUSXMLFile(fileCollection);
     }
 
     @FXML
     private void clearPersons() {
-        //personCollection.clear();
+        personCollection.clear();
     }
 
     @FXML
