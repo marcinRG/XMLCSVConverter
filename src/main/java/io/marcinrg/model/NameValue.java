@@ -6,9 +6,12 @@ public class NameValue {
     private String name;
     private BigDecimal data;
 
-    public NameValue(String name) {
+    public NameValue(String name, String valueAsString) {
         this.name = name;
-        this.data = BigDecimal.ZERO;
+        if (valueAsString.equals("") || valueAsString.equals(" ")) {
+            data = BigDecimal.ZERO;
+        }
+        data = new BigDecimal(valueAsString);
     }
 
     public NameValue(String name, BigDecimal data) {
@@ -20,16 +23,8 @@ public class NameValue {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public BigDecimal getData() {
         return data;
-    }
-
-    public void setData(BigDecimal data) {
-        this.data = data;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.marcinrg.xml;
 
-import io.marcinrg.interfaces.IGetPersonFromFile;
 import io.marcinrg.interfaces.IGetPersonsFromFile;
 import io.marcinrg.model.NameValue;
 import io.marcinrg.model.Person;
@@ -25,7 +24,6 @@ public class PersonZUSHandler extends DefaultHandler implements IGetPersonsFromF
     private String currentElem;
     private String valElem;
 
-    public int personCount = 0;
     private final String header = "row";
     private int rowCount = 0;
     private boolean isDocument;
@@ -48,7 +46,6 @@ public class PersonZUSHandler extends DefaultHandler implements IGetPersonsFromF
     private void intialize() {
         currentElem = "";
         valElem = "";
-        personCount = 0;
         isDocument = false;
         isPerson = false;
         isPersonalData = false;
@@ -180,7 +177,7 @@ public class PersonZUSHandler extends DefaultHandler implements IGetPersonsFromF
 
         if ((isData2nd || isData1st ||isData3rd) && isData) {
             String newName = header + rowCount + qName;
-            person.addValue(new NameValue(newName,new BigDecimal(valElem)));
+            person.addValue(new NameValue(newName,valElem));
             isData = false;
         }
         valElem = "";

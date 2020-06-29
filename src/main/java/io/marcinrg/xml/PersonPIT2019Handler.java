@@ -22,7 +22,6 @@ public class PersonPIT2019Handler extends DefaultHandler implements IGetPersonFr
     private String currentElem;
     private String valElem;
 
-
     //flags
     private boolean isPerson = false;
     private boolean isAddress = false;
@@ -129,7 +128,7 @@ public class PersonPIT2019Handler extends DefaultHandler implements IGetPersonFr
         }
 
         if (qName.startsWith("P_")) {
-            person.addValue(new NameValue(currentElem, new BigDecimal(valElem)));
+            person.addValue(new NameValue(currentElem, valElem));
             valElem = "";
             currentElem = "";
         }

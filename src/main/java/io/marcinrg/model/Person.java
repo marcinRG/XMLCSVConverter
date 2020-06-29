@@ -1,8 +1,9 @@
 package io.marcinrg.model;
 
-
 import io.marcinrg.interfaces.IGetData;
+import io.marcinrg.utils.NumberFormatConversions;
 
+import java.text.ParseException;
 import java.util.TreeMap;
 
 public class Person implements IGetData {
@@ -14,19 +15,10 @@ public class Person implements IGetData {
         return personData;
     }
 
-    public void setPersonData(TreeMap<String, NameValue> personData) {
-        this.personData = personData;
-    }
-
     public Person() {
         this.personData = new TreeMap<>();
         this.name = "";
         this.surName = "";
-    }
-
-    public Person(String name, String surName) {
-        this.name = name;
-        this.surName = surName;
     }
 
     public String getName() {
@@ -53,9 +45,18 @@ public class Person implements IGetData {
         return String.format("%s%s%s", this.name, delimiter, this.surName);
     }
 
-    protected String getDataAsString(String delimiter) {
+    protected String getDataAsString(String delimiter, boolean changeNumbersToPLEncoding) {
         StringBuilder stringBuilder = new StringBuilder();
-        this.personData.values().forEach((elem) -> stringBuilder.append(String.format("%s%s", delimiter, elem.getData().toString())));
+        if (changeNumbersToPLEncoding) {
+            this.personData.values().forEach((elem) -> {
+                try {
+                    stringBuilder.append(String.format("%s%s", delimiter, NumberFormatConversions.convertNumberEntoPL(elem.getData().toString())));
+                } catch (ParseException e) {}
+            });
+            return stringBuilder.toString();
+        } else {
+            this.personData.values().forEach((elem) -> stringBuilder.append(String.format("%s%s", delimiter, elem.getData().toString())));
+        }
         return stringBuilder.toString();
     }
 
@@ -65,10 +66,14 @@ public class Person implements IGetData {
         return stringBuilder.toString();
     }
 
-
     @Override
     public String getData(String delimiter) {
-        return String.format("%s%s", getNameAndSurName(delimiter),  getDataAsString(delimiter));
+        return String.format("%s%s", getNameAndSurName(delimiter), getDataAsString(delimiter, false));
+    }
+
+    @Override
+    public String getData(String delimiter, boolean changeNumbersToPLEncoding) {
+        return String.format("%s%s", getNameAndSurName(delimiter), getDataAsString(delimiter, changeNumbersToPLEncoding));
     }
 
     public String getNames(String delimiter) {

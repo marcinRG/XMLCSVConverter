@@ -36,14 +36,10 @@
                   </RadioMenuItem>
                   <RadioMenuItem fx:id="XMLPITRadioItem" mnemonicParsing="false" onAction="#changeFileType" text="XML PIT" toggleGroup="$PLIKI" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <RadioMenuItem fx:id="PIT2017RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2017">
+                  <RadioMenuItem fx:id="PIT2019RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2019">
                      <toggleGroup>
                         <ToggleGroup fx:id="PITY" />
-                     </toggleGroup>
-                  </RadioMenuItem>
-                  <RadioMenuItem fx:id="PIT2018RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2018" toggleGroup="$PITY" />
-                  <RadioMenuItem fx:id="PIT2019RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2019" toggleGroup="$PITY" />
-                  <RadioMenuItem fx:id="PIT2020RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2020" toggleGroup="$PITY" />
+                     </toggleGroup></RadioMenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Dodatkowe">
@@ -100,7 +96,7 @@
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
                <children>
                   <Button mnemonicParsing="false" onAction="#loadFiles" prefWidth="150.0" text="Wczytaj pliki XML z katalogu" />
-                  <Button minWidth="-Infinity" mnemonicParsing="false" prefWidth="150.0" text="Usuń POM z plików XML" />
+                  <Button disable="true" minWidth="-Infinity" mnemonicParsing="false" prefWidth="150.0" text="Usuń BOM z plików XML" />
                   <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#clearFiles" prefWidth="150.0" text="Wyczyść pliki" />
                </children>
             </VBox>
@@ -110,18 +106,8 @@
                   <Button mnemonicParsing="false" onAction="#clearPersons" prefWidth="150.0" text="Wyczyść" />
                </children>
             </VBox>
-            <TableView fx:id="tableViewFiles" prefHeight="200.0" prefWidth="200.0">
-<!--              <columns>-->
-<!--                <TableColumn prefWidth="75.0" fx:id="fileNameColumn"/>-->
-<!--                <TableColumn prefWidth="75.0" fx:id="filePathColumn"/>-->
-<!--              </columns>-->
-            </TableView>
-            <TableView fx:id="tableViewPersons" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
-<!--              <columns>-->
-<!--                <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Nazwisko" />-->
-<!--                <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Imię" />-->
-<!--              </columns>-->
-            </TableView>
+            <TableView fx:id="tableViewFiles" prefHeight="200.0" prefWidth="200.0"></TableView>
+            <TableView fx:id="tableViewPersons" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2"></TableView>
             <Button mnemonicParsing="false" onAction="#parsePersons" text="Parsuj =&gt;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
          </children>
       </GridPane>

@@ -5,9 +5,13 @@ public class PersonPIT extends Person {
     private Address address;
 
     @Override
-    public String getData(String delimiter) {
-        return String.format("%s%s%s%s", getNameAndSurName(delimiter), address.getData(delimiter), getDataAsString(delimiter));
+    public String getData(String delimiter,boolean changeNumbersToPLEncoding) {
+        return String.format("%s%s%s", getNameAndSurName(delimiter), address.getData(delimiter), getDataAsString(delimiter,changeNumbersToPLEncoding));
+    }
 
+    @Override
+    public String getData(String delimiter) {
+        return getData(delimiter, false);
     }
 
     @Override
@@ -20,18 +24,8 @@ public class PersonPIT extends Person {
         address = new Address();
     }
 
-    public PersonPIT(String name, String surName) {
-        this();
-        this.name = name;
-        this.surName = surName;
-    }
-
     public Address getAddress() {
         return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
 }

@@ -57,22 +57,4 @@ public class PersonCollection {
             }
         }
     }
-
-    public boolean saveToFile(File file) {
-        try {
-            if (personsList.size() > 0) {
-                FileOutputStream fout = new FileOutputStream(file);
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fout))) {
-                    for (Person person : personsList) {
-                        writer.write(person.getData("|"));
-                        writer.newLine();
-                    }
-                }
-
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return true;
-    }
 }

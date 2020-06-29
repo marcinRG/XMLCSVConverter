@@ -7,12 +7,6 @@ public class Address implements IGetData {
     private String streetName;
     private String streetNumber;
 
-    public Address(String city, String streetName, String streetNumber) {
-        this.city = city;
-        this.streetName = streetName;
-        this.streetNumber = streetNumber;
-    }
-
     public Address()
     {
         this.city ="";
@@ -47,6 +41,11 @@ public class Address implements IGetData {
     @Override
     public String getData(String delimiter) {
         return String.format("%s%s%s%s%s%s",delimiter,city,delimiter,streetName,delimiter,streetNumber);
+    }
+
+    @Override @Deprecated
+    public String getData(String delimiter, boolean changeNumbersToPLEncoding) {
+        return getData(delimiter);
     }
 
     @Override

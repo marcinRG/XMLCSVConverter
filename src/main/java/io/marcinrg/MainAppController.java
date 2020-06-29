@@ -4,11 +4,9 @@ import io.marcinrg.collections.FileCollection;
 import io.marcinrg.collections.PersonCollection;
 import io.marcinrg.model.FileWithPOM;
 import io.marcinrg.model.Person;
-import io.marcinrg.xml.PersonPIT2019Handler;
-import io.marcinrg.xml.PersonZUSHandler;
+import io.marcinrg.utils.FileSaver;
 import javafx.application.Platform;
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -17,16 +15,12 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-
 import java.io.File;
 
 
 public class MainAppController {
     private DirectoryChooser getFiles = new DirectoryChooser();
     private FileChooser saveFile = new FileChooser();
-    private PersonPIT2019Handler personPIT2019Handler = new PersonPIT2019Handler();
-    private PersonZUSHandler personZUSHandler = new PersonZUSHandler();
 
     private FileCollection fileCollection = new FileCollection();
     private PersonCollection personCollection = new PersonCollection();
@@ -38,27 +32,8 @@ public class MainAppController {
 
     @FXML
     private TableView<FileWithPOM> tableViewFiles = new TableView<>();
-    private TableColumn<FileWithPOM, String> fileNameColumn = new TableColumn<>("Nazwa pliku");
-    private TableColumn<FileWithPOM, String> filePathColumn = new TableColumn<>("Ścieżka");
-    private TableColumn<FileWithPOM, Boolean> filePOMColumn = new TableColumn<>("POM");
-
     @FXML
     private TableView<Person> tableViewPersons = new TableView<>();
-
-
-    //private TableView<PersonSimple> tableViewPersons = new TableView<>();
-//    private ObservableList<PersonSimple> personsExpList = FXCollections.observableArrayList(
-//            new PersonSimple("janek", "kowalski"),
-//            new PersonSimple("ben", "dżonson"),
-//            new PersonSimple("john", "doe")
-//    );
-//    private ObservableList<PersonExp> personsExpList = FXCollections.observableArrayList(
-//            new PersonExp("janek", "kowalski", "e@e.com"),
-//            new PersonExp("ben", "dżonson", "e@e.com"),
-//            new PersonExp("john", "doe", "e@e.com")
-//    );
-
-
     @FXML
     private Label labelSelectedFileType;
     @FXML
@@ -67,15 +42,9 @@ public class MainAppController {
     private RadioMenuItem XMLZusRadioItem;
     @FXML
     private RadioMenuItem XMLPITRadioItem;
-
-    @FXML
-    private RadioMenuItem PIT2017RadioItem;
-    @FXML
-    private RadioMenuItem PIT2018RadioItem;
     @FXML
     private RadioMenuItem PIT2019RadioItem;
-    @FXML
-    private RadioMenuItem PIT2020RadioItem;
+
 
 
     public MainAppController() {
@@ -95,22 +64,15 @@ public class MainAppController {
     }
 
     private void prepareTableViewFiles() {
+        TableColumn<FileWithPOM, String> fileNameColumn = new TableColumn<>("Nazwa pliku");
+        TableColumn<FileWithPOM, String> filePathColumn = new TableColumn<>("Ścieżka");
+        TableColumn<FileWithPOM, Boolean> filePOMColumn = new TableColumn<>("BOM");
         tableViewFiles.getColumns().addAll(fileNameColumn, filePathColumn, filePOMColumn);
         fileNameColumn.setCellValueFactory((TableColumn.CellDataFeatures<FileWithPOM, String> fileStringCellDataFeatures) -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getFile().getName()));
         filePathColumn.setCellValueFactory(fileStringCellDataFeatures -> new SimpleStringProperty(fileStringCellDataFeatures.getValue().getFile().getAbsolutePath()));
 
-        filePOMColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FileWithPOM, Boolean>, ObservableValue<Boolean>>() {
-            @Override
-            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<FileWithPOM, Boolean> fileWithPOMBooleanCellDataFeatures) {
-                return new ReadOnlyBooleanWrapper(fileWithPOMBooleanCellDataFeatures.getValue().isHasPOM());
-            }
-        });
-        filePOMColumn.setCellFactory(new Callback<TableColumn<FileWithPOM, Boolean>, TableCell<FileWithPOM, Boolean>>() {
-            @Override
-            public TableCell<FileWithPOM, Boolean> call(TableColumn<FileWithPOM, Boolean> fileWithPOMBooleanTableColumn) {
-                return new CheckBoxTableCell();
-            }
-        });
+        filePOMColumn.setCellValueFactory(fileWithPOMBooleanCellDataFeatures -> new ReadOnlyBooleanWrapper(fileWithPOMBooleanCellDataFeatures.getValue().isHasPOM()));
+        filePOMColumn.setCellFactory(fileWithPOMBooleanTableColumn -> new CheckBoxTableCell());
         tableViewFiles.setItems(fileCollection.getFileList());
         tableViewFiles.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
@@ -132,17 +94,11 @@ public class MainAppController {
     private void setEnabledFileFormatRadioItems(String name) {
         switch (name) {
             case labelPITType: {
-                PIT2017RadioItem.setDisable(false);
-                PIT2018RadioItem.setDisable(false);
                 PIT2019RadioItem.setDisable(false);
-                PIT2020RadioItem.setDisable(false);
                 break;
             }
             default: {
-                PIT2017RadioItem.setDisable(true);
-                PIT2018RadioItem.setDisable(true);
                 PIT2019RadioItem.setDisable(true);
-                PIT2020RadioItem.setDisable(true);
             }
         }
     }
@@ -178,7 +134,7 @@ public class MainAppController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             File f = saveFile.showSaveDialog(stage);
             if (f != null) {
-                boolean saved = personCollection.saveToFile(f);
+                boolean saved = FileSaver.saveToFile(f, personCollection.getPersonsList(),"|", true);
                 if (!saved) {
                     System.out.println("Did not save to file");
                 }

@@ -6,6 +6,11 @@ import java.util.ArrayList;
 public class PersonZUS extends Person {
     private String PESEL;
     private String disabilityCode;
+
+    public ArrayList<BigDecimal> getWorkTimes() {
+        return workTimes;
+    }
+
     private ArrayList<BigDecimal> workTimes;
 
     public String getDisabilityCode() {
@@ -23,17 +28,6 @@ public class PersonZUS extends Person {
         this.workTimes = new ArrayList<>();
     }
 
-    public PersonZUS(String name, String surName) {
-        this();
-        this.setName(name);
-        this.setSurName(surName);
-    }
-
-    public PersonZUS(String name, String surName, String PESEL) {
-        this(name, surName);
-        this.setPESEL(PESEL);
-    }
-
     public String getPESEL() {
         return PESEL;
     }
@@ -42,15 +36,21 @@ public class PersonZUS extends Person {
         this.PESEL = PESEL;
     }
 
-    public String getData(String delimiter) {
-        //return String.format("%s%s%s%s", getNameAndSurName(delimiter), delimiter, getPESEL(), getDataAsString(delimiter));
-        return getDataAsString(delimiter);
+    @Override
+    public String getData(String delimiter, boolean changeNumbersToPLEncoding) {
+        return String.format("%s%s%s%s%s%s%s%s", getNameAndSurName(delimiter), delimiter, getPESEL(), delimiter,
+                getDisabilityCode(), delimiter, getTimes(), getDataAsString(delimiter, changeNumbersToPLEncoding));
     }
 
+    @Override
+    public String getData(String delimiter) {
+        return getData(delimiter, false);
+    }
+
+    @Override
     public String getNames(String delimiter) {
-        //return String.format("%s%s%s%s%s%s", "name", delimiter, "surname", delimiter, "PESEL",getDataNamesAsString(delimiter));
-        //return String.format("%s%s%s%s", "name", delimiter, "surname", delimiter, "PESEL");
-        return getDataNamesAsString(delimiter);
+        return String.format("%s%s%s%s%s%s%s%s%s%s", "name", delimiter, "surname", delimiter, "PESEL", delimiter,
+                "Disability Code", delimiter, "Work time", getDataNamesAsString(delimiter));
     }
 
     public void addTime(BigDecimal number) {

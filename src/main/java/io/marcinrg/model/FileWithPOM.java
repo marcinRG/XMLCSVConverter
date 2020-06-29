@@ -8,11 +8,11 @@ public class FileWithPOM {
 
     public FileWithPOM(File file) {
         this.file = file;
-        this.hasPOM = false;
+        hasPOM = false;
     }
 
     public FileWithPOM(File file, boolean hasPOM) {
-        this.file = file;
+        this(file);
         this.hasPOM = hasPOM;
     }
 
@@ -20,15 +20,8 @@ public class FileWithPOM {
         return file;
     }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
-
     public boolean isHasPOM() {
         return hasPOM;
     }
 
-    public void setHasPOM(boolean hasPOM) {
-        this.hasPOM = hasPOM;
-    }
 }
