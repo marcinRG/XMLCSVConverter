@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -18,28 +19,29 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.marcinrg.MainAppController">
+<BorderPane maxHeight="1.7976931348623157E308"  fx:id="appWindow"  maxWidth="1.7976931348623157E308" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.marcinrg.MainAppController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="Plik">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Zamknij" />
+              <MenuItem mnemonicParsing="false" text="Zamknij" onAction="#closeApplication"/>
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Typy plików">
+          <Menu mnemonicParsing="false" text="Typy plików" fx:id="fileOptions">
             <items>
-                  <RadioMenuItem fx:id="XMLZusRadioItem" mnemonicParsing="false" onAction="#changeFileType" selected="true" text="XML ZUS">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="PLIKI" />
-                     </toggleGroup>
-                  </RadioMenuItem>
-                  <RadioMenuItem fx:id="XMLPITRadioItem" mnemonicParsing="false" onAction="#changeFileType" text="XML PIT" toggleGroup="$PLIKI" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <RadioMenuItem fx:id="PIT2019RadioItem" disable="true" mnemonicParsing="false" onAction="#changeFileFormat" text="PIT 8 - 2019">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="PITY" />
-                     </toggleGroup></RadioMenuItem>
+<!--                  <RadioMenuItem fx:id="XMLZusRadioItem" mnemonicParsing="false"  selected="true" text="XML ZUS">-->
+<!--                     <toggleGroup>-->
+<!--                        <ToggleGroup fx:id="PLIKI" />-->
+<!--                     </toggleGroup>-->
+<!--                  </RadioMenuItem>-->
+<!--                  <RadioMenuItem fx:id="XMLPITRadioItem" mnemonicParsing="false"  text="XML PIT" toggleGroup="$PLIKI" />-->
+<!--                  <SeparatorMenuItem mnemonicParsing="false" />-->
+<!--                  <Menu mnemonicParsing="false" text="XML PIT 11 Typy">-->
+<!--                     <items>-->
+<!--                        <CheckMenuItem mnemonicParsing="false" text="PIT-11 2019" />-->
+<!--                     </items>-->
+<!--                  </Menu>-->
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Dodatkowe">
@@ -53,7 +55,7 @@
    <right>
       <VBox alignment="BOTTOM_CENTER" depthTest="ENABLE" minWidth="150.0" prefHeight="200.0" prefWidth="150.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#closeApplication" text="Wyjdź" />
+            <Button defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Wyjdź" onAction="#closeApplication"/>
          </children>
          <opaqueInsets>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -95,20 +97,20 @@
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#loadFiles" prefWidth="150.0" text="Wczytaj pliki XML z katalogu" />
+                  <Button mnemonicParsing="false"  prefWidth="150.0" text="Wczytaj pliki XML z katalogu" />
                   <Button disable="true" minWidth="-Infinity" mnemonicParsing="false" prefWidth="150.0" text="Usuń BOM z plików XML" />
-                  <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#clearFiles" prefWidth="150.0" text="Wyczyść pliki" />
+                  <Button minWidth="-Infinity" mnemonicParsing="false"  prefWidth="150.0" text="Wyczyść pliki" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Button mnemonicParsing="false" onAction="#saveFiles" prefWidth="150.0" text="Zapisz do pliku .csv" />
-                  <Button mnemonicParsing="false" onAction="#clearPersons" prefWidth="150.0" text="Wyczyść" />
+                  <Button mnemonicParsing="false"  prefWidth="150.0" text="Zapisz do pliku .csv" />
+                  <Button mnemonicParsing="false"  prefWidth="150.0" text="Wyczyść" />
                </children>
             </VBox>
-            <TableView fx:id="tableViewFiles" prefHeight="200.0" prefWidth="200.0"></TableView>
-            <TableView fx:id="tableViewPersons" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2"></TableView>
-            <Button mnemonicParsing="false" onAction="#parsePersons" text="Parsuj =&gt;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+            <TableView fx:id="tableViewFiles" prefHeight="200.0" prefWidth="200.0" />
+            <TableView fx:id="tableViewPersons" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
+            <Button mnemonicParsing="false"  text="Parsuj =&gt;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
          </children>
       </GridPane>
    </center>

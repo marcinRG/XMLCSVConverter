@@ -2,50 +2,50 @@ package io.marcinrg;
 
 import io.marcinrg.collections.FileCollection;
 import io.marcinrg.collections.PersonCollection;
+import io.marcinrg.enums.FileTypesNames;
+import io.marcinrg.factories.MenuItemsFactory;
+import io.marcinrg.model.AppState;
 import io.marcinrg.model.FileWithPOM;
 import io.marcinrg.model.Person;
 import io.marcinrg.utils.FileSaver;
 import javafx.application.Platform;
-import javafx.beans.property.*;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 
 
 public class MainAppController {
+
+    private AppState appState = new AppState();
     private DirectoryChooser getFiles = new DirectoryChooser();
     private FileChooser saveFile = new FileChooser();
-
     private FileCollection fileCollection = new FileCollection();
     private PersonCollection personCollection = new PersonCollection();
-    private String labelType = "Wybrany typ pliku: ";
-    private String labelFormat = "Wybrany format pliku: ";
 
-    private final String labelZUSType = "Plik ZUS";
-    private final String labelPITType = "Plik PIT-8";
+//    private String labelType = "Wybrany typ pliku: ";
+//    private String labelFormat = "Wybrany format pliku: ";
 
+    @FXML
+    BorderPane appWindow;
+    @FXML
+    Menu fileOptions;
     @FXML
     private TableView<FileWithPOM> tableViewFiles = new TableView<>();
     @FXML
     private TableView<Person> tableViewPersons = new TableView<>();
-    @FXML
-    private Label labelSelectedFileType;
-    @FXML
-    private Label labelSelectedFileFormat;
-    @FXML
-    private RadioMenuItem XMLZusRadioItem;
-    @FXML
-    private RadioMenuItem XMLPITRadioItem;
-    @FXML
-    private RadioMenuItem PIT2019RadioItem;
-
-
 
     public MainAppController() {
     }
@@ -81,25 +81,10 @@ public class MainAppController {
     private void initialize() {
         setDirectoryChooserOptions();
         setFileChooserOptions();
-        XMLZusRadioItem.setSelected(true);
-        XMLZusRadioItem.setText(labelZUSType);
-        XMLPITRadioItem.setText(labelPITType);
-        labelSelectedFileType.setText(labelType + labelZUSType);
-        setEnabledFileFormatRadioItems("");
         prepareTableViewFiles();
         prepareTableViewPersons();
-
-    }
-
-    private void setEnabledFileFormatRadioItems(String name) {
-        switch (name) {
-            case labelPITType: {
-                PIT2019RadioItem.setDisable(false);
-                break;
-            }
-            default: {
-                PIT2019RadioItem.setDisable(true);
-            }
+        for (FileTypesNames file: FileTypesNames.values()) {
+            fileOptions.getItems().add(MenuItemsFactory.createRadioMenuItemForFileOptionMenu(file,appState.selectedFileTypeProperty()));
         }
     }
 
@@ -140,25 +125,6 @@ public class MainAppController {
                 }
             }
         }
-    }
-
-    @FXML
-    private void changeFileType(ActionEvent event) {
-        String txt = ((RadioMenuItem) event.getSource()).getText();
-        labelSelectedFileType.setText(labelType + txt);
-        setEnabledFileFormatRadioItems(txt);
-    }
-
-    @FXML
-    private void changeFileFormat(ActionEvent event) {
-        String txt = ((RadioMenuItem) event.getSource()).getText();
-        labelSelectedFileFormat.setText(labelFormat + txt);
-        setEnabledFileFormatRadioItems(txt);
-    }
-
-    @FXML
-    private void parsePersons() {
-        personCollection.getPersonsFromZUSXMLFile(fileCollection);
     }
 
     @FXML

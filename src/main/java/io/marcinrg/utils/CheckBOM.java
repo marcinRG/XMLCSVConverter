@@ -1,22 +1,16 @@
 package io.marcinrg.utils;
-import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.input.BOMInputStream;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class CheckBOM {
     public static boolean checkUTF8FileForBOM(File f) {
-        try {
-            InputStream inputStream = new FileInputStream(f);
-            BOMInputStream bomInputStream = new BOMInputStream(inputStream);
-            return bomInputStream.hasBOM();
-
+        boolean hasBom = false;
+        try (BOMInputStream bomInputStream = new BOMInputStream(new FileInputStream(f))) {
+            hasBom = bomInputStream.hasBOM();
         } catch (IOException e) {
-            System.out.println(e.getCause());
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        return false;
+        return hasBom;
     }
 
     public static BOMInputStream getStream(File f) {
