@@ -3,6 +3,7 @@ package io.marcinrg;
 import io.marcinrg.collections.FileCollection;
 import io.marcinrg.collections.PersonCollection;
 import io.marcinrg.enums.FileTypesNames;
+import io.marcinrg.enums.PitType;
 import io.marcinrg.factories.MenuItemsFactory;
 import io.marcinrg.model.AppState;
 import io.marcinrg.model.FileWithPOM;
@@ -11,13 +12,12 @@ import io.marcinrg.utils.FileSaver;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Menu;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
@@ -83,9 +83,34 @@ public class MainAppController {
         setFileChooserOptions();
         prepareTableViewFiles();
         prepareTableViewPersons();
-        for (FileTypesNames file: FileTypesNames.values()) {
-            fileOptions.getItems().add(MenuItemsFactory.createRadioMenuItemForFileOptionMenu(file,appState.selectedFileTypeProperty()));
+        createFilesMenu();
+
+
+        appState.selectedFileTypeProperty().addListener(new ChangeListener<FileTypesNames>() {
+            @Override
+            public void changed(ObservableValue<? extends FileTypesNames> observableValue, FileTypesNames oldValue, FileTypesNames newValue) {
+                System.out.println(newValue.getFileType());
+            }
+        });
+
+
+    }
+
+    private void createFilesMenu() {
+        ToggleGroup toggleGroup = new ToggleGroup();
+        for (FileTypesNames file : FileTypesNames.values()) {
+            fileOptions.getItems().add(MenuItemsFactory.createRadioMenuItemForFileOptionMenu(file, toggleGroup, appState.selectedFileTypeProperty()));
         }
+        Menu pitTypesMenu = new Menu("XML PIT-11 rodzaje");
+        ToggleGroup pityToggleGroup = new ToggleGroup();
+        for (PitType type : PitType.values()) {
+            RadioMenuItem radioMenuItem = new RadioMenuItem(type.toString());
+            radioMenuItem.setToggleGroup(pityToggleGroup);
+            pitTypesMenu.getItems().add(radioMenuItem);
+        }
+        pitTypesMenu.disableProperty().bind(appState.pitFileDisabledProperty());
+        fileOptions.getItems().add(new SeparatorMenuItem());
+        fileOptions.getItems().add(pitTypesMenu);
     }
 
     private void setDirectoryChooserOptions() {
@@ -119,7 +144,7 @@ public class MainAppController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             File f = saveFile.showSaveDialog(stage);
             if (f != null) {
-                boolean saved = FileSaver.saveToFile(f, personCollection.getPersonsList(),"|", true);
+                boolean saved = FileSaver.saveToFile(f, personCollection.getPersonsList(), "|", true);
                 if (!saved) {
                     System.out.println("Did not save to file");
                 }
