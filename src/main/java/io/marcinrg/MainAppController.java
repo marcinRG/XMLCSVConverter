@@ -12,8 +12,6 @@ import io.marcinrg.utils.FileSaver;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -35,8 +33,8 @@ public class MainAppController {
     private FileCollection fileCollection = new FileCollection();
     private PersonCollection personCollection = new PersonCollection();
 
-//    private String labelType = "Wybrany typ pliku: ";
-//    private String labelFormat = "Wybrany format pliku: ";
+    private final String labelType = "Wybrany typ pliku: ";
+    private final String labelFormat = "Wybrany format pliku: ";
 
     @FXML
     BorderPane appWindow;
@@ -84,31 +82,38 @@ public class MainAppController {
         prepareTableViewFiles();
         prepareTableViewPersons();
         createFilesMenu();
-
-
-        appState.selectedFileTypeProperty().addListener(new ChangeListener<FileTypesNames>() {
-            @Override
-            public void changed(ObservableValue<? extends FileTypesNames> observableValue, FileTypesNames oldValue, FileTypesNames newValue) {
-                System.out.println(newValue.getFileType());
-            }
-        });
-
-
     }
+
+    private void showInfoDialog(String info, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Uwaga: Informacja!");
+        alert.setHeaderText(info);
+        alert.setContentText(msg);
+        alert.show();
+    }
+
+    private void showWarningDialog(String info, String msg) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Uwaga: Wystąpił błąd!");
+        alert.setHeaderText(info);
+        alert.setContentText(msg);
+        alert.show();
+    }
+
 
     private void createFilesMenu() {
         ToggleGroup toggleGroup = new ToggleGroup();
         for (FileTypesNames file : FileTypesNames.values()) {
-            fileOptions.getItems().add(MenuItemsFactory.createRadioMenuItemForFileOptionMenu(file, toggleGroup, appState.selectedFileTypeProperty()));
+            fileOptions.getItems().add(MenuItemsFactory.createRadioMenuItemForFileType(file, toggleGroup, appState.selectedFileTypeProperty()));
         }
         Menu pitTypesMenu = new Menu("XML PIT-11 rodzaje");
+
         ToggleGroup pityToggleGroup = new ToggleGroup();
         for (PitType type : PitType.values()) {
-            RadioMenuItem radioMenuItem = new RadioMenuItem(type.toString());
-            radioMenuItem.setToggleGroup(pityToggleGroup);
-            pitTypesMenu.getItems().add(radioMenuItem);
+            pitTypesMenu.getItems().add(MenuItemsFactory.createRadioMenuItemForPitType(type, pityToggleGroup, appState.selectedPITTypeProperty()));
         }
         pitTypesMenu.disableProperty().bind(appState.pitFileDisabledProperty());
+
         fileOptions.getItems().add(new SeparatorMenuItem());
         fileOptions.getItems().add(pitTypesMenu);
     }
@@ -146,9 +151,46 @@ public class MainAppController {
             if (f != null) {
                 boolean saved = FileSaver.saveToFile(f, personCollection.getPersonsList(), "|", true);
                 if (!saved) {
-                    System.out.println("Did not save to file");
+                    showWarningDialog("Zapis nie powiódł się", "Zapis do pliku nie zakończył się sukcesem");
                 }
             }
+        }
+    }
+
+    @FXML
+    private void parsePersons() {
+        if (appState.isFileTypeSelected()) {
+            switch (appState.getSelectedFileType()) {
+                case XML_ZUS: {
+                    personCollection.getPersonsFromZUSXMLFile(fileCollection);
+                }
+                break;
+                case XML_PIT_11: {
+                    parsePITS();
+                }
+                break;
+                default: {
+                    showInfoDialog("Nie zaimplementowano", "W obecnej chwili funkcjonalonść nie jest zaimplementowana");
+                }
+            }
+        } else {
+            showInfoDialog("Nie wybrany typ plików", "Nie wybrano typu plików do parsowania. Otwórz menu 'typy plików' i wybierz tam odpowiednią opcję.");
+        }
+    }
+
+    private void parsePITS() {
+        if (appState.isPitFileSelected()) {
+            switch (appState.getSelectedPITType()) {
+                case PIT_11_2019: {
+                    personCollection.getPersonsFromPITFiles(fileCollection);
+                }
+                break;
+                default: {
+                    showInfoDialog("Nie zaimplementowano", "W obecnej chwili funkcjonalonść nie jest zaimplementowana");
+                }
+            }
+        } else {
+            showInfoDialog("Nie wybrany typ pliku PIT", "Nie wybrano rodzaju plików PIT. Otwórz menu 'typy plików > XML PIT-11 rodzaje' i wybierz odpowiednią opcję.");
         }
     }
 
@@ -165,5 +207,10 @@ public class MainAppController {
     @FXML
     private void closeApplication() {
         Platform.exit();
+    }
+
+    @FXML
+    private  void showAppInfo() {
+        showInfoDialog("Opis aplikacji", "Prosta aplikacja służąca do parsowania plików XML wykorzystywanych do komunikacji z rożnymi urzędami. Sparsowane dane można zapisać jako pliki csv");
     }
 }

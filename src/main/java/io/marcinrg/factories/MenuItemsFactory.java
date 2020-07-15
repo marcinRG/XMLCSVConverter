@@ -1,18 +1,15 @@
 package io.marcinrg.factories;
 
 import io.marcinrg.enums.FileTypesNames;
-import io.marcinrg.model.AppState;
-import javafx.beans.property.BooleanProperty;
+import io.marcinrg.enums.PitType;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 
 public class MenuItemsFactory {
 
-    public static RadioMenuItem createRadioMenuItemForFileOptionMenu(FileTypesNames fileTypesNames, ToggleGroup toggleGroup,
-                                                                     SimpleObjectProperty<FileTypesNames> objectProperty) {
+    public static RadioMenuItem createRadioMenuItemForFileType(FileTypesNames fileTypesNames, ToggleGroup toggleGroup,
+                                                               SimpleObjectProperty<FileTypesNames> objectProperty) {
         RadioMenuItem radioMenuItem = new RadioMenuItem(fileTypesNames.getFileType());
         radioMenuItem.setToggleGroup(toggleGroup);
 
@@ -22,6 +19,17 @@ public class MenuItemsFactory {
             }
         });
 
+        return radioMenuItem;
+    }
+
+    public static RadioMenuItem createRadioMenuItemForPitType(PitType pitType, ToggleGroup toggleGroup, SimpleObjectProperty<PitType> objectProperty) {
+        RadioMenuItem radioMenuItem = new RadioMenuItem(pitType.toString());
+        radioMenuItem.setToggleGroup(toggleGroup);
+        radioMenuItem.setOnAction(event->{
+            if (radioMenuItem.isSelected()) {
+                objectProperty.set(pitType);
+            }
+        });
         return radioMenuItem;
     }
 
