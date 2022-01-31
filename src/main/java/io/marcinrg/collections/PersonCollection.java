@@ -4,7 +4,7 @@ package io.marcinrg.collections;
 import io.marcinrg.model.FileWithPOM;
 import io.marcinrg.model.Person;
 import io.marcinrg.model.PersonPIT;
-import io.marcinrg.xml.PersonPIT2019Handler;
+import io.marcinrg.xml.PersonPIT2021Handler;
 import io.marcinrg.xml.PersonZUSHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,10 +32,10 @@ public class PersonCollection {
     public void getPersonsFromPITFiles(FileCollection fileCollection) {
         if (fileCollection.getFileList().size() > 0) {
             personsList.clear();
-            PersonPIT2019Handler personPIT2019Handler = new PersonPIT2019Handler();
+            PersonPIT2021Handler personPIT2021Handler = new PersonPIT2021Handler();
             for (FileWithPOM element : fileCollection.getFileList()) {
                 try {
-                    PersonPIT personPIT = personPIT2019Handler.getPersonFromFile(element.getFile());
+                    PersonPIT personPIT = personPIT2021Handler.getPersonFromFile(element.getFile());
                     personsList.add(personPIT);
                 } catch
                 (IOException | SAXException | ParserConfigurationException e) {

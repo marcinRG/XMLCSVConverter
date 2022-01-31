@@ -29,7 +29,7 @@ public class PersonPIT extends Person {
 
     private void initializeData() {
         String pre = "P_";
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i <= 100; i++) {
             this.addValue(new NameValue(pre + i, BigDecimal.ZERO));
         }
     }

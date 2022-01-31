@@ -181,7 +181,7 @@ public class MainAppController {
     private void parsePITS() {
         if (appState.isPitFileSelected()) {
             switch (appState.getSelectedPITType()) {
-                case PIT_11_2019: {
+                case PIT_11_2021: {
                     personCollection.getPersonsFromPITFiles(fileCollection);
                 }
                 break;
