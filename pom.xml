@@ -38,6 +38,8 @@
 
     </dependencies>
     <build>
+    
+
         <plugins>
 
             <plugin>
@@ -65,7 +67,7 @@
                     <mainClass>io.marcinrg.App</mainClass>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
@@ -90,6 +92,8 @@
                 </executions>
             </plugin>
 
+            
         </plugins>
+
     </build>
 </project>

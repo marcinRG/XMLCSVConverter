@@ -45,7 +45,7 @@ public class Person implements IGetData {
         return String.format("%s%s%s", this.name, delimiter, this.surName);
     }
 
-    public String getDataAsString(String delimiter, boolean changeNumbersToPLEncoding) {
+    protected String getDataAsString(String delimiter, boolean changeNumbersToPLEncoding) {
         StringBuilder stringBuilder = new StringBuilder();
         if (changeNumbersToPLEncoding) {
             this.personData.values().forEach((elem) -> {

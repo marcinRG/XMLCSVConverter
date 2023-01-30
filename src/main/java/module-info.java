@@ -1,4 +1,4 @@
-module io.marcinrg {
+module io.marcinrg.App {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.xml;

@@ -4,6 +4,7 @@ import io.marcinrg.interfaces.IGetPersonFromFile;
 import io.marcinrg.model.NameValue;
 import io.marcinrg.model.PersonPIT;
 import io.marcinrg.utils.CheckBOM;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -12,9 +13,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class PersonPIT2022Handler extends DefaultHandler implements IGetPersonFromFile<PersonPIT> {
 
@@ -32,7 +34,6 @@ public class PersonPIT2022Handler extends DefaultHandler implements IGetPersonFr
 
     private void intialize() {
         person = new PersonPIT();
-        System.out.println(person.getDataAsString("|",false));
         currentElem = "";
         valElem = "";
     }
@@ -131,7 +132,6 @@ public class PersonPIT2022Handler extends DefaultHandler implements IGetPersonFr
         if (qName.startsWith("P_")) {
             //String name = currentElem.substring(0);
             String name = currentElem;
-            System.out.println(name + " ,value:" + valElem);
             person.addValue(new NameValue(name, valElem));
             valElem = "";
             currentElem = "";
@@ -144,7 +144,6 @@ public class PersonPIT2022Handler extends DefaultHandler implements IGetPersonFr
             isAddress = false;
         }
         if (qName.equals("PozycjeSzczegolowe")) {
-            System.out.println(person.getDataAsString("|",false));
             isData = false;
         }
 
@@ -177,6 +176,8 @@ public class PersonPIT2022Handler extends DefaultHandler implements IGetPersonFr
     public PersonPIT getPersonFromFile(File file) throws IOException, SAXException, ParserConfigurationException {
         BOMInputStream inputStream = CheckBOM.getStream(file);
         return getPersonFromInputStream(inputStream);
+//        InputStream inputStream = new FileInputStream(file);
+//        return getPersonFromInputStream(inputStream);
     }
 
     @Override
