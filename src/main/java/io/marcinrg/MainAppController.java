@@ -182,9 +182,13 @@ public class MainAppController {
         if (appState.isPitFileSelected()) {
             switch (appState.getSelectedPITType()) {
                 case PIT_11_2021: {
-                    personCollection.getPersonsFromPITFiles(fileCollection);
+                    personCollection.getPersonsFromPIT2021Files(fileCollection);
+                    break;
                 }
-                break;
+                case PIT_11_2022: {
+                    personCollection.getPersonsFromPIT2022Files(fileCollection);
+                    break;
+                }
                 default: {
                     showInfoDialog("Nie zaimplementowano", "W obecnej chwili funkcjonalonść nie jest zaimplementowana");
                 }
